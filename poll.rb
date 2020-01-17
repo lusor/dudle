@@ -50,9 +50,10 @@ end
 
 class Poll
 	attr_reader :head, :name
-	YESVAL   = "a_yes__"
-	MAYBEVAL = "b_maybe"
-	NOVAL    = "c_no___"
+	YESVAL     = "a_yes__"
+	MAYBEVAL   = "b_maybe"
+	NOVAL      = "c_no___"
+	CONFIRMVAL = "d_confirm"
 
 	@@table_html_hooks = []
 	def Poll.table_html_hooks
@@ -136,6 +137,9 @@ class Poll
 					when /maybe/
 						value = MAYBE
 						klasse = MAYBEVAL
+					when /confirm/
+						value = CONFIRM
+						klasse = CONFIRMVAL
 					end
 					ret += "<td class=\"vote #{klasse}\" title=\"#{CGI.escapeHTML(participant)}: #{CGI.escapeHTML(column.to_s)}\">#{value}</td>\n"
 				}
@@ -152,30 +156,47 @@ class Poll
 
 		# SUMMARY
 		ret += "<tr id='summary'><td colspan='2' class='name'>" + _("Total") + "</td>\n"
+		ret_yes = ''
+		ret_confirmed = ''
+		use_confirmed = false
 		@head.columns.each{|column|
 			yes = 0
 			undecided = 0
+			confirmed = 0
 			@data.each_value{|participant|
 				if participant[column] =~ /yes/
 					yes += 1
+				elsif participant[column] =~ /confirm/
+					confirmed += 1
 				elsif !participant.has_key?(column) or participant[column] =~ /maybe/
 					undecided += 1
 				end
 			}
 
+			use_confirmed = true if confirmed > 0
 			if @data.empty?
-				percent_f = 0
+				percent_f_yes = 0
+				percent_f_confirmed = 0
 			else
-				percent_f = 100.0*yes/@data.size
+				percent_f_yes = 100.0*yes/@data.size
+				percent_f_confirmed = 100.0*confirmed/@data.size
 			end
-			percent = "#{percent_f.round}%" unless @data.empty?
+			percent_yes = "#{percent_f_yes.round}%" unless @data.empty?
+			percent_confirmed = "#{percent_f_confirmed.round}%" unless @data.empty?
 			if undecided > 0
-				percent += "-#{(100.0*(undecided+yes)/@data.size).round} %"
+				percent_yes += "-#{(100.0*(undecided+yes)/@data.size).round} %"
+				percent_confirmed += "-#{(100.0*(undecided+confirmed)/@data.size).round} %"
 			end
 
-			ret += "<td id=\"sum_#{column.to_htmlID}\" class=\"sum match_#{(percent_f/10).round*10}\" title=\"#{percent}\">#{yes}</td>\n"
+			ret_yes += "<td id=\"sum_#{column.to_htmlID}\" class=\"sum match_#{(percent_f_yes/10).round*10}\" title=\"#{percent_yes}\">#{yes}</td>\n"
+			ret_confirmed += "<td id=\"sum_#{column.to_htmlID}\" class=\"sum match_#{(percent_f_confirmed/10).round*10}\" title=\"#{percent_confirmed}\">#{confirmed}</td>\n"
 		}
 
+		if use_confirmed
+			ret += ret_confirmed
+		else
+			ret += ret_yes
+		end
 		ret += "<td class='invisible'></td></tr>"
 		ret += "</tbody></table>\n"
 		ret
@@ -279,7 +300,7 @@ END
 
 		@head.columns.each{|column|
 			ret += "<td class='checkboxes'><table class='checkboxes'>"
-			[[YES, YESVAL],[NO, NOVAL],[MAYBE, MAYBEVAL]].each{|valhuman, valbinary|
+			[[CONFIRM, CONFIRMVAL],[YES, YESVAL],[NO, NOVAL],[MAYBE, MAYBEVAL]].each{|valhuman, valbinary|
 				ret += <<TR
 				<tr class='input-#{valbinary}'>
 					<td class='input-radio'>
@@ -518,7 +539,7 @@ end
 #└───────────────────┴────────┴────────┴────────┴──────┴────────────┘
 
 class PollTest < Test::Unit::TestCase
-	Y,N,M   = Poll::YESVAL, Poll::NOVAL, Poll::MAYBEVAL
+	Y,N,M,Z = Poll::YESVAL, Poll::NOVAL, Poll::MAYBEVAL, Poll::CONFIRMVAL
 	A,B,C,D = "Alice", "Bob", "Carol", "Dave"
 	Q,W,E,R = "2009-05-05", "2009-05-23 10:00", "2009-05-23 11:00", "2009-05-23 foo"
 	def setup

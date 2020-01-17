@@ -34,6 +34,7 @@ if $USEUTF
 	YES      = CGI.escapeHTML('✔')
 	NO       = CGI.escapeHTML('✘')
 	MAYBE    = CGI.escapeHTML('?')
+	CONFIRM  = CGI.escapeHTML('!')
 	UNKNOWN  = CGI.escapeHTML("–")
 	CROSS    = CGI.escapeHTML('✘')
 
@@ -57,6 +58,7 @@ else
 	YES      = CGI.escapeHTML('OK')
 	NO       = CGI.escapeHTML('NO')
 	MAYBE    = CGI.escapeHTML('?')
+	CONFIRM  = CGI.escapeHTML('!')
 	UNKNOWN  = CGI.escapeHTML("-")
 	CROSS    = CGI.escapeHTML('X')
 
