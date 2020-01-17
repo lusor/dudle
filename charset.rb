@@ -31,11 +31,12 @@ if $USEUTF
 	GODOWN      = CGI.escapeHTML('⇩')
 	GOUP        = CGI.escapeHTML('⇧')
 
-	YES      = CGI.escapeHTML('✔')
-	NO       = CGI.escapeHTML('✘')
-	MAYBE    = CGI.escapeHTML('?')
-	UNKNOWN  = CGI.escapeHTML("–")
-	CROSS    = CGI.escapeHTML('✘')
+	YES       = CGI.escapeHTML('✔')
+	NO        = CGI.escapeHTML('✘')
+	MAYBE     = CGI.escapeHTML('?')
+	SCHEDULED = CGI.escapeHTML('!')
+	UNKNOWN   = CGI.escapeHTML("–")
+	CROSS     = CGI.escapeHTML('✘')
 
 	# Thanks to Antje for the symbols
 	MONTHBACK    = CGI.escapeHTML("◀")
@@ -54,11 +55,12 @@ else
 	GODOWN      = CGI.escapeHTML('down')
 	GOUP        = CGI.escapeHTML('up')
 
-	YES      = CGI.escapeHTML('OK')
-	NO       = CGI.escapeHTML('NO')
-	MAYBE    = CGI.escapeHTML('?')
-	UNKNOWN  = CGI.escapeHTML("-")
-	CROSS    = CGI.escapeHTML('X')
+	YES       = CGI.escapeHTML('OK')
+	NO        = CGI.escapeHTML('NO')
+	MAYBE     = CGI.escapeHTML('?')
+	SCHEDULED = CGI.escapeHTML('!')
+	UNKNOWN   = CGI.escapeHTML("-")
+	CROSS     = CGI.escapeHTML('X')
 
 	MONTHBACK    = CGI.escapeHTML("<")
 	MONTHFORWARD = CGI.escapeHTML(">")

@@ -88,6 +88,22 @@
 #}
 #$conf.indexnotice += "</table>"
 
+# Add the following htmlcode to a poll's page, will be added before the title
+# %{YES}, %{NO}, %{MAYBE}, %{SCHEDULED} will be replaced by the corresponding symbol
+#$conf.participatenotice = <<PARTICIPATENOTICE
+#	<table class="polltable">
+#		<tr>
+#			<td class="vote c_no___">%{NO}</td>
+#			<td>No / I cannot</td>
+#			<td class="vote b_maybe">%{MAYBE}</td>
+#			<td>Maybe / I might be able to</td>
+#			<td class="vote a_yes__">%{YES}</td>
+#			<td>Yes / I can</td>
+#			<td class="vote d_sched">%{SCHEDULED}</td>
+#			<td>- / I was scheduled by the person responsible</td>
+#		</tr>
+#	</table>
+#PARTICIPATENOTICE
 
 # Add some Example Polls to the example page.
 # You may create those using the normal interface

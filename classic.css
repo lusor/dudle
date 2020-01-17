@@ -27,10 +27,11 @@ a.comment_sort, a.top_bottom_ref {
 }
 
 
-td.a_yes__, td.b_maybe, td.c_no___ { cursor:default; }
+td.a_yes__, td.b_maybe, td.c_no___, td.d_sched { cursor:default; }
 td.a_yes__{ background-color:#0F0; }
 td.c_no___ { background-color:#F00; }
 td.b_maybe { background-color:#FF0; }
+td.d_sched { background-color:#080; }
 td.undecided { background-color:#DDD;color:#666 }
 td.checkboxes {
 	background-color: #DDD;
@@ -45,6 +46,7 @@ table.checkboxes{
 td.input-c_no___ { background-color: #F00 }
 td.input-a_yes__ { background-color: #0F0}
 td.input-b_maybe { background-color: #FF0}
+td.input-d_sched { background-color: #080}
 
 label { cursor: pointer; }
 

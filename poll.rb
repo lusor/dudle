@@ -50,9 +50,10 @@ end
 
 class Poll
 	attr_reader :head, :name
-	YESVAL   = "a_yes__"
-	MAYBEVAL = "b_maybe"
-	NOVAL    = "c_no___"
+	YESVAL       = "a_yes__"
+	MAYBEVAL     = "b_maybe"
+	NOVAL        = "c_no___"
+	SCHEDULEDVAL = "d_sched"
 
 	@@table_html_hooks = []
 	def Poll.table_html_hooks
@@ -144,6 +145,10 @@ class Poll
 						value = MAYBE
 						klasse = MAYBEVAL
 						str = _("%{user} selected Maybe")  % {:user => CGI.escapeHTML(participant)}
+					when /sched/
+						value = SCHEDULED
+						klasse = SCHEDULEDVAL
+                                                str = _("%{user} was scheduled")  % {:user => CGI.escapeHTML(participant)}
 					end
 					if column.to_s.match(/\d\d\d\d\-\d\d\-\d\d/)
 						ret += "<td class=\"vote #{klasse}\" title=\"#{CGI.escapeHTML(participant)}: #{CGI.escapeHTML(column.to_s)}\"><span class='visually-hidden'>#{str}</span><span aria-hidden='true'>#{value}</span></td>\n"
@@ -164,33 +169,51 @@ class Poll
 
 		# SUMMARY
 		ret += "<tr id='summary'><td colspan='2' class='name'>" + _("Total") + "</td>\n"
+		ret_yes = ''
+		ret_scheduled = ''
+		use_scheduled = false
 		@head.columns.each{|column|
 			yes = 0
 			undecided = 0
+			scheduled = 0
 			@data.each_value{|participant|
 				if participant[column] =~ /yes/
 					yes += 1
+				elsif participant[column] =~ /sched/
+					scheduled += 1
 				elsif !participant.has_key?(column) or participant[column] =~ /maybe/
 					undecided += 1
 				end
 			}
 
+			use_scheduled = true if scheduled > 0
 			if @data.empty?
-				percent_f = 0
+				percent_f_yes = 0
+				percent_f_scheduled = 0
 			else
-				percent_f = 100.0*yes/@data.size
+				percent_f_yes = 100.0*yes/@data.size
+				percent_f_scheduled = 100.0*scheduled/@data.size
 			end
-			percent = "#{percent_f.round}%" unless @data.empty?
+			percent_yes = "#{percent_f_yes.round}%" unless @data.empty?
+			percent_scheduled = "#{percent_f_scheduled.round}%" unless @data.empty?
 			if undecided > 0
-				percent += "-#{(100.0*(undecided+yes)/@data.size).round} %"
+				percent_yes += "-#{(100.0*(undecided+yes)/@data.size).round} %"
+				percent_scheduled += "-#{(100.0*(undecided+scheduled)/@data.size).round} %"
 			end
 			
 			ofstr = _("out of")
 			votedstr = _("participants voted yes")
+			votedstr_scheduled = "Teilnehmenden wurden eingeteilt"
 
-			ret += "<td id=\"sum_#{column.to_htmlID}\" class=\"sum match_#{(percent_f/10).round*10}\" title=\"#{yes} #{ofstr} #{@data.size} #{votedstr}\"><span aria-hidden=\"true\">#{yes}</span><span class=\"visually-hidden\">#{yes} #{ofstr} #{@data.size} #{votedstr}.</span></td>\n"		
+			ret_yes += "<td id=\"sum_#{column.to_htmlID}\" class=\"sum match_#{(percent_f_yes/10).round*10}\" title=\"#{yes} #{ofstr} #{@data.size} #{votedstr}\"><span aria-hidden=\"true\">#{yes}</span><span class=\"visually-hidden\">#{yes} #{ofstr} #{@data.size} #{votedstr}.</span></td>\n"
+			ret_scheduled += "<td id=\"sum_#{column.to_htmlID}\" class=\"sum match_#{(percent_f_scheduled/10).round*10}\" title=\"#{scheduled} #{ofstr} #{@data.size} #{votedstr_scheduled}\"><span aria-hidden=\"true\">#{scheduled}</span><span class=\"visually-hidden\">#{scheduled} #{ofstr} #{@data.size} #{votedstr_scheduled}.</span></td>\n"
 		}
 
+		if use_scheduled
+			ret += ret_scheduled
+		else
+			ret += ret_yes
+		end
 		ret += "<td class='invisible'></td></tr>"
 		ret += "</tbody></table>\n"
 		ret
@@ -296,7 +319,7 @@ END
 
 		@head.columns.each{|column|
 			ret += "<td class='checkboxes'><table class='checkboxes'>"
-			[[YES, YESVAL, _("Yes")],[NO, NOVAL, _("No")],[MAYBE, MAYBEVAL, _("Maybe")]].each{|valhuman, valbinary, valtext|
+			[[SCHEDULED, SCHEDULEDVAL, _("Confirmed")],[YES, YESVAL, _("Yes")],[NO, NOVAL, _("No")],[MAYBE, MAYBEVAL, _("Maybe")]].each{|valhuman, valbinary, valtext|
 			if column.to_s.match(/\d\d\d\d\-\d\d\-\d\d/)
 				ret += <<TR
 				<tr class='input-#{valbinary}'>
@@ -564,7 +587,7 @@ end
 #└───────────────────┴────────┴────────┴────────┴──────┴────────────┘
 
 class PollTest < Test::Unit::TestCase
-	Y,N,M   = Poll::YESVAL, Poll::NOVAL, Poll::MAYBEVAL
+	Y,N,M,Z = Poll::YESVAL, Poll::NOVAL, Poll::MAYBEVAL
 	A,B,C,D = "Alice", "Bob", "Carol", "Dave"
 	Q,W,E,R = "2009-05-05", "2009-05-23 10:00", "2009-05-23 11:00", "2009-05-23 foo"
 	def setup

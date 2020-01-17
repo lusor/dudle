@@ -65,7 +65,7 @@ $d.html.add_atom("atom.cgi") if File.exists?("../atom.rb")
 # TABLE
 $d << <<HTML
 <div id='polltable'>
-	<form method='post' action='.' accept-charset='utf-8'>
+#{$conf.participatenotice.gsub('%{YES}', YES).gsub('%{NO}', NO).gsub('%{MAYBE}', MAYBE).gsub('%{SCHEDULED}', SCHEDULED)}	<form method='post' action='.' accept-charset='utf-8'>
 		#{$d.table.to_html}
 	</form>
 </div>
