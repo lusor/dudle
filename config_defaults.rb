@@ -53,6 +53,8 @@ $conf.known_errors = []
 
 $conf.indexnotice = ""
 
+$conf.participatenotice = ""
+
 $conf.examples = []
 
 $conf.examplenotice = ""
