@@ -50,10 +50,10 @@ end
 
 class Poll
 	attr_reader :head, :name
-	YESVAL     = "a_yes__"
-	MAYBEVAL   = "b_maybe"
-	NOVAL      = "c_no___"
-	CONFIRMVAL = "d_confirm"
+	YESVAL       = "a_yes__"
+	MAYBEVAL     = "b_maybe"
+	NOVAL        = "c_no___"
+	SCHEDULEDVAL = "d_sched"
 
 	@@table_html_hooks = []
 	def Poll.table_html_hooks
@@ -137,9 +137,9 @@ class Poll
 					when /maybe/
 						value = MAYBE
 						klasse = MAYBEVAL
-					when /confirm/
-						value = CONFIRM
-						klasse = CONFIRMVAL
+					when /sched/
+						value = SCHEDULED
+						klasse = SCHEDULEDVAL
 					end
 					ret += "<td class=\"vote #{klasse}\" title=\"#{CGI.escapeHTML(participant)}: #{CGI.escapeHTML(column.to_s)}\">#{value}</td>\n"
 				}
@@ -157,43 +157,43 @@ class Poll
 		# SUMMARY
 		ret += "<tr id='summary'><td colspan='2' class='name'>" + _("Total") + "</td>\n"
 		ret_yes = ''
-		ret_confirmed = ''
-		use_confirmed = false
+		ret_scheduled = ''
+		use_scheduled = false
 		@head.columns.each{|column|
 			yes = 0
 			undecided = 0
-			confirmed = 0
+			scheduled = 0
 			@data.each_value{|participant|
 				if participant[column] =~ /yes/
 					yes += 1
-				elsif participant[column] =~ /confirm/
-					confirmed += 1
+				elsif participant[column] =~ /sched/
+					scheduled += 1
 				elsif !participant.has_key?(column) or participant[column] =~ /maybe/
 					undecided += 1
 				end
 			}
 
-			use_confirmed = true if confirmed > 0
+			use_scheduled = true if scheduled > 0
 			if @data.empty?
 				percent_f_yes = 0
-				percent_f_confirmed = 0
+				percent_f_scheduled = 0
 			else
 				percent_f_yes = 100.0*yes/@data.size
-				percent_f_confirmed = 100.0*confirmed/@data.size
+				percent_f_scheduled = 100.0*scheduled/@data.size
 			end
 			percent_yes = "#{percent_f_yes.round}%" unless @data.empty?
-			percent_confirmed = "#{percent_f_confirmed.round}%" unless @data.empty?
+			percent_scheduled = "#{percent_f_scheduled.round}%" unless @data.empty?
 			if undecided > 0
 				percent_yes += "-#{(100.0*(undecided+yes)/@data.size).round} %"
-				percent_confirmed += "-#{(100.0*(undecided+confirmed)/@data.size).round} %"
+				percent_scheduled += "-#{(100.0*(undecided+scheduled)/@data.size).round} %"
 			end
 
 			ret_yes += "<td id=\"sum_#{column.to_htmlID}\" class=\"sum match_#{(percent_f_yes/10).round*10}\" title=\"#{percent_yes}\">#{yes}</td>\n"
-			ret_confirmed += "<td id=\"sum_#{column.to_htmlID}\" class=\"sum match_#{(percent_f_confirmed/10).round*10}\" title=\"#{percent_confirmed}\">#{confirmed}</td>\n"
+			ret_scheduled += "<td id=\"sum_#{column.to_htmlID}\" class=\"sum match_#{(percent_f_scheduled/10).round*10}\" title=\"#{percent_scheduled}\">#{scheduled}</td>\n"
 		}
 
-		if use_confirmed
-			ret += ret_confirmed
+		if use_scheduled
+			ret += ret_scheduled
 		else
 			ret += ret_yes
 		end
@@ -300,7 +300,7 @@ END
 
 		@head.columns.each{|column|
 			ret += "<td class='checkboxes'><table class='checkboxes'>"
-			[[CONFIRM, CONFIRMVAL],[YES, YESVAL],[NO, NOVAL],[MAYBE, MAYBEVAL]].each{|valhuman, valbinary|
+			[[SCHEDULED, SCHEDULEDVAL],[YES, YESVAL],[NO, NOVAL],[MAYBE, MAYBEVAL]].each{|valhuman, valbinary|
 				ret += <<TR
 				<tr class='input-#{valbinary}'>
 					<td class='input-radio'>
@@ -539,7 +539,7 @@ end
 #└───────────────────┴────────┴────────┴────────┴──────┴────────────┘
 
 class PollTest < Test::Unit::TestCase
-	Y,N,M,Z = Poll::YESVAL, Poll::NOVAL, Poll::MAYBEVAL, Poll::CONFIRMVAL
+	Y,N,M,Z = Poll::YESVAL, Poll::NOVAL, Poll::MAYBEVAL
 	A,B,C,D = "Alice", "Bob", "Carol", "Dave"
 	Q,W,E,R = "2009-05-05", "2009-05-23 10:00", "2009-05-23 11:00", "2009-05-23 foo"
 	def setup

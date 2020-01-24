@@ -89,7 +89,7 @@
 #$conf.indexnotice += "</table>"
 
 # Add the following htmlcode to a poll's page, will be added before the title
-# %{YES}, %{NO}, %{MAYBE}, %{CONFIRM} will be replaced by the corresponding symbol
+# %{YES}, %{NO}, %{MAYBE}, %{SCHEDULED} will be replaced by the corresponding symbol
 #$conf.participatenotice = <<PARTICIPATENOTICE
 #	<table class="polltable">
 #		<tr>
@@ -99,8 +99,8 @@
 #			<td>Maybe / I might be able to</td>
 #			<td class="vote a_yes__">%{YES}</td>
 #			<td>Yes / I can</td>
-#			<td class="vote d_confirm">%{CONFIRM}</td>
-#			<td>Definitely / I was scheduled by the person responsible</td>
+#			<td class="vote d_sched">%{SCHEDULED}</td>
+#			<td>- / I was scheduled by the person responsible</td>
 #		</tr>
 #	</table>
 #PARTICIPATENOTICE
