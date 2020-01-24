@@ -13,13 +13,13 @@ ErrorDocument 503 /maintenance.cgi
 SetEnv LC_ALL "en_US.UTF-8"
 
 <FilesMatch "^\.ht.*">
-	deny from all
+	Require all denied
 	satisfy all
 	ErrorDocument 403 "Access to these files is forbidden!"
 </FilesMatch>
 
 <FilesMatch "^data.yaml$">
-	deny from all
+	Require all denied
 	satisfy all
 	ErrorDocument 403 "Access to these files is forbidden!"
 </FilesMatch>
