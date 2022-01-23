@@ -51,11 +51,33 @@ td.match_30 { background-color: #FFd666 !important; }
 td.match_20 { background-color: #FFc166 !important; }
 td.match_10 { background-color: #FFad66 !important; }
 td.match_0  { background-color: #FF9966 !important; }
+td.match_sk_100{background-color: #ff0000; }
+td.match_sk_90{ background-color: #ff3300; }
+td.match_sk_80{ background-color: #ff6600; }
+td.match_sk_70{ background-color: #ff9a00; }
+td.match_sk_60{ background-color: #ffcd00; }
+td.match_sk_50{ background-color: #ffff00; }
+td.match_sk_40{ background-color: #cde600; }
+td.match_sk_30{ background-color: #9acd00; }
+td.match_sk_20{ background-color: #66b300; }
+td.match_sk_10{ background-color: #339a00; }
+td.match_sk_0{  background-color: #008000; }
 
 td.a_yes__, input.chosen  { background-color:#9c6; }
 td.c_no___ { background-color:#F96; }
 td.b_maybe { background-color:#FF6; }
 td.d_sched { background-color:#6a3; }
+td.z_sk___0, table.checkboxes tr.input-0 td { background-color: #008000; }
+td.z_sk___1, table.checkboxes tr.input-1 td { background-color: #339a00; }
+td.z_sk___2, table.checkboxes tr.input-2 td { background-color: #66b300; }
+td.z_sk___3, table.checkboxes tr.input-3 td { background-color: #9acd00; }
+td.z_sk___4, table.checkboxes tr.input-4 td { background-color: #cde600; }
+td.z_sk___5, table.checkboxes tr.input-5 td { background-color: #ffff00; }
+td.z_sk___6, table.checkboxes tr.input-6 td { background-color: #ffcd00; }
+td.z_sk___7, table.checkboxes tr.input-7 td { background-color: #ff9a00; }
+td.z_sk___8, table.checkboxes tr.input-8 td { background-color: #ff6600; }
+td.z_sk___9, table.checkboxes tr.input-9 td { background-color: #ff3300; }
+td.z_sk___10, table.checkboxes tr.input-10 td { background-color: #ff0000; }
 td.undecided { background-color:#DDD;color:#666 }
 
 td.name {

@@ -82,6 +82,7 @@ unless $d.html.header["status"] == "REDIRECT"
 	typestr = _("Type")
 	timepollstr = _("Event-scheduling poll (e.&thinsp;g., schedule a meeting)")
 	normalpollstr = _("Normal poll (e.&thinsp;g., vote for what is the best coffee)")
+	skpollstr = _("Systemisches Konsensieren (Widerst&auml;nde 0-10)")
 	customaddrstr = _("Custom address (optional)")
 	customaddrhintstr = _("May contain letters, numbers, and dashes.")
 
@@ -101,6 +102,9 @@ unless $d.html.header["status"] == "REDIRECT"
 		<br />
 		<input id='chooseNormal' type='radio' value='normal' name='poll_type' />
 		<label for='chooseNormal'>#{normalpollstr}</label>
+		<br />
+		<input id='chooseSk' type='radio' value='sk' name='poll_type' />
+		<label for='chooseSk'>#{skpollstr}</label>
 	</td>
 </tr>
 <tr>

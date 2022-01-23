@@ -42,6 +42,17 @@ input.chosen:hover { background-color: #8B5 }
 td.c_no___, tr.input-c_no___ td { background-color:#F96 }
 td.b_maybe, tr.input-b_maybe td { background-color:#FF6}
 td.d_sched, tr.input-d_sched td { background-color:#6A3}
+td.z_sk___0, table.checkboxes tr.input-0 td { background-color: #008000; }
+td.z_sk___1, table.checkboxes tr.input-1 td { background-color: #339a00; }
+td.z_sk___2, table.checkboxes tr.input-2 td { background-color: #66b300; }
+td.z_sk___3, table.checkboxes tr.input-3 td { background-color: #9acd00; }
+td.z_sk___4, table.checkboxes tr.input-4 td { background-color: #cde600; }
+td.z_sk___5, table.checkboxes tr.input-5 td { background-color: #ffff00; }
+td.z_sk___6, table.checkboxes tr.input-6 td { background-color: #ffcd00; }
+td.z_sk___7, table.checkboxes tr.input-7 td { background-color: #ff9a00; }
+td.z_sk___8, table.checkboxes tr.input-8 td { background-color: #ff6600; }
+td.z_sk___9, table.checkboxes tr.input-9 td { background-color: #ff3300; }
+td.z_sk___10, table.checkboxes tr.input-10 td { background-color: #ff0000; }
 td.undecided { background-color:#DDD }
 
 td.checkboxes {
@@ -198,10 +209,10 @@ tr.participantrow{
 	background-color:#fff;
 }
 
-tr#summary {
+tr#summary, tr#summary_sk {
 	background-color:#eee;
 }
-td.sum, tr#summary {
+td.sum, tr#summary, tr#summary_sk {
 	margin-top:5ex;
 }
 td.sum{ color: #FFF}

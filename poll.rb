@@ -48,12 +48,16 @@ end
 class WrongPollTypeError < StandardError
 end
 
+class SkPollHead < PollHead
+end
+
 class Poll
 	attr_reader :head, :name
 	YESVAL       = "a_yes__"
 	MAYBEVAL     = "b_maybe"
 	NOVAL        = "c_no___"
 	SCHEDULEDVAL = "d_sched"
+	SKVAL        = "z_sk___"
 
 	@@table_html_hooks = []
 	def Poll.table_html_hooks
@@ -64,6 +68,8 @@ class Poll
 		@name = name
 
 		case type
+		when "sk"
+			@head = SkPollHead.new
 		when "normal"
 			@head = PollHead.new
 		when "time"
@@ -149,6 +155,10 @@ class Poll
 						value = SCHEDULED
 						klasse = SCHEDULEDVAL
                                                 str = _("%{user} was scheduled")  % {:user => CGI.escapeHTML(participant)}
+					when /^[0-9]+$/
+						value = poll[column]
+						klasse = SKVAL + poll[column]
+						str = _("%{user} selected %{value}")  % {:user => CGI.escapeHTML(participant), :value => value}
 					end
 					if column.to_s.match(/\d\d\d\d\-\d\d\-\d\d/)
 						ret += "<td class=\"vote #{klasse}\" title=\"#{CGI.escapeHTML(participant)}: #{CGI.escapeHTML(column.to_s)}\"><span class='visually-hidden'>#{str}</span><span aria-hidden='true'>#{value}</span></td>\n"
@@ -164,18 +174,20 @@ class Poll
 		@@table_html_hooks.each{|hook| ret += hook.call(ret)}
 
 		ret += "</tbody><tbody>"
-		# PARTICIPATE
-		ret += participate_to_html unless @data.keys.include?($cgi["edituser"]) || !showparticipation
-
 		# SUMMARY
+		ret += "<tr id='separator_summary'><td colspan='#{@head.col_size + 3}' class='invisible'></td></tr>\n"
 		ret += "<tr id='summary'><td colspan='2' class='name'>" + _("Total") + "</td>\n"
 		ret_yes = ''
 		ret_scheduled = ''
 		use_scheduled = false
+		ret_sk = "<tr id='summary_sk'><td colspan='2' class='name'>" + _("Durchschnitt") + "</td>\n"
+		ret_sksum = ''
+		ret_sksum2 = ''
 		@head.columns.each{|column|
 			yes = 0
 			undecided = 0
 			scheduled = 0
+			sksum = 0
 			@data.each_value{|participant|
 				if participant[column] =~ /yes/
 					yes += 1
@@ -183,6 +195,8 @@ class Poll
 					scheduled += 1
 				elsif !participant.has_key?(column) or participant[column] =~ /maybe/
 					undecided += 1
+				elsif participant[column] =~ /^[0-9]+$/
+					sksum += participant[column].to_i
 				end
 			}
 
@@ -190,12 +204,15 @@ class Poll
 			if @data.empty?
 				percent_f_yes = 0
 				percent_f_scheduled = 0
+				percent_f_sksum = 0
 			else
 				percent_f_yes = 100.0*yes/@data.size
 				percent_f_scheduled = 100.0*scheduled/@data.size
+				percent_f_sksum = 100.0*sksum/10/@data.size
 			end
 			percent_yes = "#{percent_f_yes.round}%" unless @data.empty?
 			percent_scheduled = "#{percent_f_scheduled.round}%" unless @data.empty?
+			percent_sksum = "#{percent_f_sksum.round}%" unless @data.empty?
 			if undecided > 0
 				percent_yes += "-#{(100.0*(undecided+yes)/@data.size).round} %"
 				percent_scheduled += "-#{(100.0*(undecided+scheduled)/@data.size).round} %"
@@ -207,14 +224,24 @@ class Poll
 
 			ret_yes += "<td id=\"sum_#{column.to_htmlID}\" class=\"sum match_#{(percent_f_yes/10).round*10}\" title=\"#{yes} #{ofstr} #{@data.size} #{votedstr}\"><span aria-hidden=\"true\">#{yes}</span><span class=\"visually-hidden\">#{yes} #{ofstr} #{@data.size} #{votedstr}.</span></td>\n"
 			ret_scheduled += "<td id=\"sum_#{column.to_htmlID}\" class=\"sum match_#{(percent_f_scheduled/10).round*10}\" title=\"#{scheduled} #{ofstr} #{@data.size} #{votedstr_scheduled}\"><span aria-hidden=\"true\">#{scheduled}</span><span class=\"visually-hidden\">#{scheduled} #{ofstr} #{@data.size} #{votedstr_scheduled}.</span></td>\n"
+			ret_sksum += "<td id=\"sum_#{column.to_htmlID}\" class=\"sum match_#{100-(percent_f_sksum/10).round*10}\" title=\"#{percent_sksum}\"><span aria-hidden=\"true\">#{sksum}</span><span class=\"visually-hidden\">#{percent_sksum}.</span></td>\n"
+			ret_sksum2 += "<td id=\"sum_#{column.to_htmlID}\" class=\"sum match_#{100-(percent_f_sksum/10).round*10}\" title=\"#{percent_sksum}\"><span aria-hidden=\"true\">#{@data.empty? ? "-" : (sksum*1.0/@data.size).round(2)}</span><span class=\"visually-hidden\">#{percent_sksum}.</span></td>\n"
 		}
 
-		if use_scheduled
+		if @head.instance_of?(SkPollHead)
+			ret += ret_sksum
+			ret += "<td class='invisible'></td></tr>"
+			ret += ret_sk
+			ret += ret_sksum2
+		elsif use_scheduled
 			ret += ret_scheduled
 		else
 			ret += ret_yes
 		end
 		ret += "<td class='invisible'></td></tr>"
+		# PARTICIPATE
+		ret += participate_to_html unless @data.keys.include?($cgi["edituser"]) || !showparticipation
+
 		ret += "</tbody></table>\n"
 		ret
 	end
@@ -318,8 +345,14 @@ END
 		ret += add_participant_input(edituser)
 
 		@head.columns.each{|column|
+			if @head.instance_of?(SkPollHead)
+				vals = [['0', '0', '0'],['1', '1', '1'], ['2', '2', '2'], ['3', '3', '3'], ['4', '4', '4'], ['5', '5', '5'], ['6', '6', '6'], ['7', '7', '7'], ['8', '8', '8'], ['9', '9', '9'], ['10', '10', '10']]
+			else
+				vals = [[SCHEDULED, SCHEDULEDVAL, _("Confirmed")],[YES, YESVAL, _("Yes")],[NO, NOVAL, _("No")],[MAYBE, MAYBEVAL, _("Maybe")]]
+			end
+
 			ret += "<td class='checkboxes'><table class='checkboxes'>"
-			[[SCHEDULED, SCHEDULEDVAL, _("Confirmed")],[YES, YESVAL, _("Yes")],[NO, NOVAL, _("No")],[MAYBE, MAYBEVAL, _("Maybe")]].each{|valhuman, valbinary, valtext|
+			vals.each{|valhuman, valbinary, valtext|
 			if column.to_s.match(/\d\d\d\d\-\d\d\-\d\d/)
 				ret += <<TR
 				<tr class='input-#{valbinary}'>

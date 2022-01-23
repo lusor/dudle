@@ -102,6 +102,14 @@ $conf.participatenotice = <<PARTICIPATENOTICE
 			<td class="vote d_sched">%{SCHEDULED}</td>
 			<td>- / Ich wurde von der/dem Verantwortlichen eingeteilt</td>
 		</tr>
+		<tr>
+			<td class="vote z_sk___10">10</td>
+			<td>Hoher Widerstand / Veto</td>
+			<td class="vote z_sk___5">5</td>
+			<td>Mittlerer Widerstand</td>
+			<td class="vote z_sk___0">0</td>
+			<td>Kein Widerstand</td>
+		</tr>
 	</table>
 PARTICIPATENOTICE
 

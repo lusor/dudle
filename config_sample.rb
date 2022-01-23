@@ -102,6 +102,14 @@
 #			<td class="vote d_sched">%{SCHEDULED}</td>
 #			<td>- / I was scheduled by the person responsible</td>
 #		</tr>
+#		<tr>
+#			<td class="vote z_sk___10">10</td>
+#			<td>High resistance / Veto</td>
+#			<td class="vote z_sk___5">5</td>
+#			<td>Medium resistance</td>
+#			<td class="vote z_sk___0">0</td>
+#			<td>No resistance</td>
+#		</tr>
 #	</table>
 #PARTICIPATENOTICE
 

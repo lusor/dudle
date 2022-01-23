@@ -289,6 +289,39 @@ td.b_maybe, table.checkboxes tr.input-b_maybe td {
 td.d_sched, table.checkboxes tr.input-d_sched td {
 	background-color: #BBCDAE;
 }
+td.z_sk___0, table.checkboxes tr.input-0 td {
+	background-color: #d3e7c5;
+}
+td.z_sk___1, table.checkboxes tr.input-1 td {
+	background-color: #dbe9c7;
+}
+td.z_sk___2, table.checkboxes tr.input-2 td {
+	background-color: #e4ebca;
+}
+td.z_sk___3, table.checkboxes tr.input-3 td {
+	background-color: #eceecc;
+}
+td.z_sk___4, table.checkboxes tr.input-4 td {
+	background-color: #f5f0cf;
+}
+td.z_sk___5, table.checkboxes tr.input-5 td {
+	background-color: #fdf2d1;
+}
+td.z_sk___6, table.checkboxes tr.input-6 td {
+	background-color: #fbeed6;
+}
+td.z_sk___7, table.checkboxes tr.input-7 td {
+	background-color: #f9ebda;
+}
+td.z_sk___8, table.checkboxes tr.input-8 td {
+	background-color: #f8e7df;
+}
+td.z_sk___9, table.checkboxes tr.input-9 td {
+	background-color: #f6e4e3;
+}
+td.z_sk___10, table.checkboxes tr.input-10 td {
+	background-color: #f4e0e8;
+}
 
 input.notchosen, input.disabled {
 	background-color: #FFF;
